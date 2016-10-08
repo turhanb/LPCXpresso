@@ -1,0 +1,57 @@
+HT16K33 is LED controller driver from Holtek (company).
+It provides an I2C interface to LEDs. In the case of
+Adafruit 7-segment displays the LEDs form the four
+7-segment number displays.
+
+Displaying digit information is done by selecting the
+bit values of segments to show and combining these
+values to display all the required segments.
+
+In case of Adafruit 4 x 7-segment display the display
+data consists of 10 characters as follows:
+- even characters index the digit, one should use 0,1,2,3,4 as indexes
+  - 0 is the left most digit
+  - 1 is the next digit
+  - 2 is for the "colon" at center
+  - 3 is the first digit after colon
+  - 4 is the right most digit
+- odd characters select the segment combinations for displaying (light on)
+- segment "bit values" are as follows
+  1 1 1
+32     2
+32     2
+32     2
+  64 64
+16     4
+16     4
+16     4
+  8 8 8
+         128
+- these are bit values in the sense that all of them correspond to single power of 2
+  1   = 2^0
+  2   = 2^1
+  128 = 2^7
+- this means that the top segment "-" is displayed alone by sending value "1"
+- top and bottom segments "=" is dislpayed with sum of "1" and "64", ie value "65"
+- upper rectangle is value 99 (for 1+2+32+64)
+- lower rectangle is value 92 (for 4+8+16+64)
+- decimal point is value "128"
+
+For displaying a value like 5681 one needs to:
+- separate the individual digits, ie calculate '5', '6', '8', and 1 (from the value)
+- map each of digits '5', '6', '8' and '1' to the actual segments
+- display the actual segments at correct positions
+
+For example, displaying "1000" one needs to send 10 bytes to the display device as:
+- 0,6,1,63,2,0,3,63,4,63
+- as these correspond to the following:
+  0 - index 0 meaning first digit
+  6 - segments for digit "1"
+  1 - index 1 for the 2nd digit
+  63 - segments for digit "0"
+  2 - index 2 for colon sign
+  0 - colon NOT displayed at all
+  3 - index 3 for second to last digit
+  63 - segments for digit "0"
+  4 - index 4 for the last digit
+  63 - segments for digit "0"

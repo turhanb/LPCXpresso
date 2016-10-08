@@ -1,0 +1,25 @@
+I2C is a bus consisting of 2 lines: clock and data.
+These lines are connected from the LPC812 MAX Board
+to display module with two wires. Additional two
+wires are needed for voltage and ground (ie. powering
+the display).
+
+So the display module is connected with total of four (4)
+lines that are (board/display):
+- GND / GND for ground
+- P0_11 / SCL for clocking (I2C bus clock)
+- P0_10 / SDA for data     (I2C bus data)
+- 5V / Vcc
+
+For communication the devices connected to I2C must obey
+the I2C protocol, ie the communication rules for the bus.
+
+The required parts of I2C communication are provided ready.
+The only functionality needed is to build the display logic
+on top of i2c_write( addr,display_data,10 ), where:
+- addr(ess) is always HW_I2C_ADDR_HT16K33 because that is the
+  bus address for the display module device
+- display_data is _always_ 10 characters, the indexes and data
+  (see ht16k33.txt document)
+- length of 10 (for length of display_data) is the 3rd parameter
+
